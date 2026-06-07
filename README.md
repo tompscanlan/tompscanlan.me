@@ -11,7 +11,7 @@ Personal site backed by AT Protocol. Every page on the site is a record in my PD
 - **Site:** [Astro](https://astro.build) static. `src/lib/atproto.ts` calls `com.atproto.repo.listRecords` at build time; pages render the records.
 - **Markdown content:** stored in the `content` union as `{ $type: "me.tompscanlan.content.markdown", markdown: "..." }`. `textContent` carries a plaintext fallback for readers that don't know the custom $type.
 - **Publish:** `scripts/publish.ts` — frontmatter + body in, `putRecord` out. Idempotent by `path`.
-- **Hosting:** Cloudflare Pages, custom domain `tompscanlan.me`, CNAME from Route53.
+- **Hosting:** Cloudflare Workers Builds with static Assets. Cloudflare authoritative DNS routes the apex custom domain to the Worker.
 
 ## Layout
 
@@ -44,7 +44,9 @@ content/                # staging dir for markdown to publish (NOT served)
 npm install
 npm run dev               # localhost:4321
 npm run build             # static build to dist/
+npm run check             # verify PDS-backed and local-content builds
 npm run preview           # serve dist/
+npm run hooks:install     # install the repository's pre-push check
 
 # publishing (needs ATPROTO_HANDLE + ATPROTO_APP_PASSWORD env vars)
 npm run publish:site                              # create/update publication record
@@ -79,6 +81,18 @@ The publish script is path-idempotent: re-publishing a file updates the same rec
 **Why the empty commit?** CF Workers Builds (Assets-only) doesn't expose deploy hooks, so git push is the trigger. The empty commit is also a useful audit trail — git history shows when each PDS record was last republished. Pass `--no-deploy` to skip the commit/push (e.g. when publishing a batch).
 
 The auto-commit/push only fires when the working tree is clean and you're on `main`. Otherwise the script logs why and lets you handle it.
+
+## Quality checks
+
+`npm run check` builds once against the public PDS and once against local staged content. GitHub Actions runs it for pushes and pull requests.
+
+Install the versioned pre-push hook after cloning:
+
+```sh
+npm run hooks:install
+```
+
+The hook runs the same check before changes leave the machine. Use Git's standard `--no-verify` escape hatch only when intentionally bypassing it.
 
 ## Why not just put markdown in the repo?
 

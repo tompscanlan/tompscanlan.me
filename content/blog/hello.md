@@ -2,7 +2,7 @@
 title: Launching tompscanlan.me on AT Protocol
 path: /blog/launching
 publishedAt: 2026-06-06T00:00:00.000Z
-description: A personal site where every page is an atproto record. Built with Astro, standard.site lexicons, and Cloudflare Pages.
+description: A personal site where every page is an atproto record. Built with Astro, standard.site lexicons, and Cloudflare Workers.
 tags: [atproto, build-log, standard.site]
 ---
 
@@ -48,5 +48,5 @@ on path — re-publishing updates the same record.
 
 The natural next step is killing the build step. A Cloudflare Worker subscribed
 to the [atproto jetstream](https://github.com/bluesky-social/jetstream),
-filtered to my DID, that fires the Pages deploy hook on every relevant record
-change. Publish from anywhere, site updates within seconds, no git commit.
+filtered to my DID, could update the deployed site on every relevant record
+change. Publish from anywhere, site updates within seconds, no git-triggered build.

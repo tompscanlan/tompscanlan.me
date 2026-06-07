@@ -17,7 +17,7 @@ const { doc } = Astro.props;
 const html = renderMarkdown(extractMarkdown(doc));
 const published = new Date(doc.record.publishedAt);
 ---
-<Base title={`${doc.record.title} — Tom Scanlan`} description={doc.record.description}>
+<Base title={`${doc.record.title} — Tom Scanlan`} description={doc.record.description} type="article">
   <article>
     <h1>{doc.record.title}</h1>
     <div class="doc-meta">

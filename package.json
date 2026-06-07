@@ -10,6 +10,8 @@
     "dev:pds": "astro dev",
     "build": "astro build",
     "build:local": "cross-env LOCAL_CONTENT=1 astro build",
+    "check": "npm run build && npm run build:local",
+    "hooks:install": "git config core.hooksPath .githooks",
     "preview": "astro preview",
     "astro": "astro",
     "publish:site": "tsx scripts/publish.ts site",
