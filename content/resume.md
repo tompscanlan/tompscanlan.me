@@ -8,28 +8,22 @@ tags: [resume]
 
 # Tom Scanlan
 
-tompscanlan@gmail.com | Louisville, KY | Remote OK | Open to Relocation
+Principal engineer · Louisville, KY · Remote OK · Open to relocation
 
-[github.com/tompscanlan](https://github.com/tompscanlan) | [linkedin.com/in/tomscanlan](https://www.linkedin.com/in/tomscanlan) | [openmeet.net](https://openmeet.net)
-
----
+[tompscanlan@gmail.com](mailto:tompscanlan@gmail.com) · [github.com/tompscanlan](https://github.com/tompscanlan) · [linkedin.com/in/tomscanlan](https://www.linkedin.com/in/tomscanlan) · [openmeet.net](https://openmeet.net)
 
 ## Summary
 
 Hands-on principal engineer with 25+ years building and shipping production software, still writing code every day. Deep across the stack: TypeScript/NestJS services, Kubernetes platform engineering, observability, and production LLM integration with bounded cost and latency. Past work: shipped into multimillion-line enterprise platforms, unlocked $100M+ in U.S. federal contract eligibility with ~2,000 lines of targeted Java, and mentored engineers through the cross-team problems that stall organizations.
 
----
-
 ## Core Skills
 
-**Languages:** TypeScript, Go, Rust, Python, Java, shell
-**Platform:** Kubernetes, Docker, Helm, Terraform, Ansible, AWS, Azure, GCP, bare-metal automation
-**Delivery & Observability:** GitHub Actions, ArgoCD, Prometheus, Grafana, OpenTelemetry, Jaeger, Loki
-**Data & Messaging:** PostgreSQL, Redis, Elasticsearch, RabbitMQ, Kafka, NATS, MQTT
-**Security:** TLS/PKI (cert-manager), Sealed Secrets, Kubernetes RBAC
-**AI/LLM:** OpenAI & Anthropic APIs, cost-bounded routing, async generation, prompt iteration, Claude Code
-
----
+- **Languages** &nbsp;TypeScript, Go, Rust, Python, Java, shell
+- **Platform** &nbsp;Kubernetes, Docker, Helm, Terraform, Ansible, AWS, Azure, GCP, bare-metal automation
+- **Delivery & Observability** &nbsp;GitHub Actions, ArgoCD, Prometheus, Grafana, OpenTelemetry, Jaeger, Loki
+- **Data & Messaging** &nbsp;PostgreSQL, Redis, Elasticsearch, RabbitMQ, Kafka, NATS, MQTT
+- **Security** &nbsp;TLS/PKI (cert-manager), Sealed Secrets, Kubernetes RBAC
+- **AI/LLM** &nbsp;OpenAI & Anthropic APIs, cost-bounded routing, async generation, prompt iteration, Claude Code
 
 ## Experience
 
@@ -70,8 +64,6 @@ Pre-sales role weighted ~75% toward engineering spikes that shipped as product f
 - Introduced containers, Kubernetes, and modern DevOps practices to VMware PSO; trained hundreds of consultants
 - Delivered infrastructure reliability and automation engagements (configuration management, CI/CD, cloud migration) at Capital One, Comcast, FedEx, and similar large enterprises
 
----
-
 ## Early Career (1997–2014)
 
 **Senior Linux Systems Administrator, The Learning House (2013–2014).** Led IT for a $15M education platform; scaled storage throughput 10x, introduced Puppet/Git configuration management, automated cloud deploy/destroy cycles to cut hosting costs.
@@ -82,6 +74,6 @@ Pre-sales role weighted ~75% toward engineering spikes that shipped as product f
 
 **Linux & network engineering (1999–2003).** Built and operated infrastructure across three datacenters at Corente and Ecampus.com. **Founder, SquareFish Media (1998–2000).** Co-founded a web/media startup; acquired by a regional ISP.
 
----
+## Education
 
-**Education:** Computer Science, University of Kentucky (three years completed)
+Computer Science, University of Kentucky (three years completed)

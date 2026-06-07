@@ -10,17 +10,19 @@ const updated = doc ? (doc.record.updatedAt ?? doc.record.publishedAt) : null;
 const title = doc?.record.title ?? "Resume";
 ---
 <Base title={`${title} — Tom Scanlan`} description={doc?.record.description}>
-  {doc && html ? (
-    <article>
-      <div class="doc-meta">Last updated {new Date(updated!).toLocaleDateString("en-US", { year: "numeric", month: "long" })}</div>
-      <Fragment set:html={html} />
-    </article>
-  ) : (
-    <article>
-      <h1>Resume</h1>
-      <p class="doc-meta">No resume record found in the PDS yet.</p>
-      <p>This page renders a <code>site.standard.document</code> with <code>path: /resume</code> from <code>did:plc:cfo32kiwdectu33qzoyvrxex</code>. Publish one with:</p>
-      <pre><code>npm run publish:doc content/resume.md</code></pre>
-    </article>
-  )}
+  <div class="resume">
+    {doc && html ? (
+      <article>
+        <div class="doc-meta">Last updated {new Date(updated!).toLocaleDateString("en-US", { year: "numeric", month: "long" })}</div>
+        <Fragment set:html={html} />
+      </article>
+    ) : (
+      <article>
+        <h1>Resume</h1>
+        <p class="doc-meta">No resume record found in the PDS yet.</p>
+        <p>This page renders a <code>site.standard.document</code> with <code>path: /resume</code> from <code>did:plc:cfo32kiwdectu33qzoyvrxex</code>. Publish one with:</p>
+        <pre><code>npm run publish:doc content/resume.md</code></pre>
+      </article>
+    )}
+  </div>
 </Base>
