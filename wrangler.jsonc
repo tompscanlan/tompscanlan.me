@@ -1,0 +1,13 @@
+{
+  // Cloudflare Workers (with Assets) config for tompscanlan.me.
+  // The site is a static Astro build — no Worker script, just assets served from ./dist.
+  // Worker names must match [a-z0-9-]; the public domain (tompscanlan.me) is configured
+  // separately under the Worker's "Domains" tab.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tompscanlanme",
+  "compatibility_date": "2026-06-07",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page"
+  }
+}
