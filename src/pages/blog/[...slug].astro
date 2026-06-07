@@ -1,0 +1,31 @@
+---
+import Base from "../../layouts/Base.astro";
+import { fetchDocuments, extractMarkdown } from "../../lib/atproto";
+import { renderMarkdown } from "../../lib/markdown";
+
+export async function getStaticPaths() {
+  const docs = await fetchDocuments();
+  return docs
+    .filter((d) => d.record.path?.startsWith("/blog/"))
+    .map((d) => ({
+      params: { slug: d.record.path!.replace(/^\/blog\//, "") },
+      props: { doc: d },
+    }));
+}
+
+const { doc } = Astro.props;
+const html = renderMarkdown(extractMarkdown(doc));
+const published = new Date(doc.record.publishedAt);
+---
+<Base title={`${doc.record.title} — Tom Scanlan`} description={doc.record.description}>
+  <article>
+    <h1>{doc.record.title}</h1>
+    <div class="doc-meta">
+      {published.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+      {doc.record.tags && doc.record.tags.length > 0 && (
+        <> · {doc.record.tags.join(", ")}</>
+      )}
+    </div>
+    <Fragment set:html={html} />
+  </article>
+</Base>

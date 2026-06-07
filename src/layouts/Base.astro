@@ -1,0 +1,40 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body>
+    <header class="site">
+      <a href="/" class="brand">Tom Scanlan</a>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/resume">Resume</a>
+        <a href="/blog">Blog</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site">
+      <span>© {new Date().getFullYear()} Tom Scanlan</span>
+      <span>
+        Content lives on <a href="https://atproto.com">AT Protocol</a> via
+        <a href="https://standard.site">standard.site</a> lexicons.
+      </span>
+    </footer>
+  </body>
+</html>

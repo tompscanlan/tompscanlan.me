@@ -1,0 +1,53 @@
+---
+import Base from "../layouts/Base.astro";
+import { fetchPublication, fetchDocuments } from "../lib/atproto";
+
+const publication = await fetchPublication();
+const docs = await fetchDocuments();
+const posts = docs
+  .filter((d) => d.record.path?.startsWith("/blog/"))
+  .slice(0, 5);
+
+const name = publication?.record.name ?? "Tom Scanlan";
+const tagline =
+  publication?.record.description ??
+  "Principal engineer. 25+ years building production systems. Founder of OpenMeet.";
+---
+<Base title={name} description={tagline}>
+  <h1>{name}</h1>
+  <p class="doc-meta">{tagline}</p>
+
+  <p>
+    I build production software end-to-end — currently TypeScript/NestJS services,
+    Kubernetes platform engineering, and AT Protocol federation for OpenMeet.
+    Past at VMware, RackN, and earlier embedded/Linux work going back to the late ’90s.
+  </p>
+
+  <p>
+    <a href="/resume">Read my resume →</a>
+  </p>
+
+  {posts.length > 0 && (
+    <>
+      <h2>Recent writing</h2>
+      <ul class="post-list">
+        {posts.map((d) => (
+          <li>
+            <a href={d.record.path}>{d.record.title}</a>
+            <div class="meta">{new Date(d.record.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</div>
+            {d.record.description && <div class="desc">{d.record.description}</div>}
+          </li>
+        ))}
+      </ul>
+      <p><a href="/blog">All posts →</a></p>
+    </>
+  )}
+
+  <h2>Elsewhere</h2>
+  <ul>
+    <li><a href="https://github.com/tompscanlan">GitHub</a></li>
+    <li><a href="https://www.linkedin.com/in/tomscanlan">LinkedIn</a></li>
+    <li><a href="https://bsky.app/profile/tompscanlan.bsky.social">Bluesky</a></li>
+    <li><a href="https://openmeet.net">OpenMeet</a></li>
+  </ul>
+</Base>

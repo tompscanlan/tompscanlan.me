@@ -1,0 +1,23 @@
+---
+import Base from "../../layouts/Base.astro";
+import { fetchDocuments } from "../../lib/atproto";
+
+const docs = await fetchDocuments();
+const posts = docs.filter((d) => d.record.path?.startsWith("/blog/"));
+---
+<Base title="Blog — Tom Scanlan" description="Writing on engineering, AT Protocol, and building OpenMeet.">
+  <h1>Blog</h1>
+  {posts.length === 0 ? (
+    <p class="doc-meta">No posts yet.</p>
+  ) : (
+    <ul class="post-list">
+      {posts.map((d) => (
+        <li>
+          <a href={d.record.path}>{d.record.title}</a>
+          <div class="meta">{new Date(d.record.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</div>
+          {d.record.description && <div class="desc">{d.record.description}</div>}
+        </li>
+      ))}
+    </ul>
+  )}
+</Base>
