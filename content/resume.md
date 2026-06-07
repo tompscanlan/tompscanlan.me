@@ -8,7 +8,7 @@ tags: [resume]
 
 # Tom Scanlan
 
-tompscanlan@gmail.com | (502) 333-5314 | Louisville, KY | Remote OK | Open to Relocation
+tompscanlan@gmail.com | Louisville, KY | Remote OK | Open to Relocation
 
 [github.com/tompscanlan](https://github.com/tompscanlan) | [linkedin.com/in/tomscanlan](https://www.linkedin.com/in/tomscanlan) | [openmeet.net](https://openmeet.net)
 
