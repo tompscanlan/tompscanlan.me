@@ -9,7 +9,12 @@ const html = doc ? renderMarkdown(extractMarkdown(doc)) : null;
 const updated = doc ? (doc.record.updatedAt ?? doc.record.publishedAt) : null;
 const title = doc?.record.title ?? "Resume";
 ---
-<Base title={`${title} — Tom Scanlan`} description={doc?.record.description}>
+<Base
+  title={`${title} — Tom Scanlan`}
+  description={doc?.record.description}
+  socialTitle="Tom Scanlan Resume | Principal Engineer and Founder"
+  socialDescription="Principal engineer with 25+ years building production software across distributed systems, Kubernetes platforms, cloud infrastructure, and AT Protocol."
+>
   <div class="resume">
     {doc && html ? (
       <article>

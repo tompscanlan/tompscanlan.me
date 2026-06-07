@@ -16,8 +16,19 @@ export async function getStaticPaths() {
 const { doc } = Astro.props;
 const html = renderMarkdown(extractMarkdown(doc));
 const published = new Date(doc.record.publishedAt);
+const socialTitle = `${doc.record.title} | Tom Scanlan`;
+const socialDescription =
+  doc.record.path === "/blog/launching"
+    ? "A build log for an AT Protocol-backed personal site using standard.site records, Astro static generation, and Cloudflare Workers Assets."
+    : doc.record.description;
 ---
-<Base title={`${doc.record.title} — Tom Scanlan`} description={doc.record.description} type="article">
+<Base
+  title={`${doc.record.title} — Tom Scanlan`}
+  description={doc.record.description}
+  socialTitle={socialTitle}
+  socialDescription={socialDescription}
+  type="article"
+>
   <article>
     <h1>{doc.record.title}</h1>
     <div class="doc-meta">

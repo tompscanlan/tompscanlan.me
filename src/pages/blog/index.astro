@@ -5,7 +5,12 @@ import { fetchDocuments } from "../../lib/atproto";
 const docs = await fetchDocuments();
 const posts = docs.filter((d) => d.record.path?.startsWith("/blog/"));
 ---
-<Base title="Blog — Tom Scanlan" description="Writing on engineering, AT Protocol, and building OpenMeet.">
+<Base
+  title="Blog — Tom Scanlan"
+  description="Writing on engineering, AT Protocol, and building OpenMeet."
+  socialTitle="Engineering, AT Protocol, and OpenMeet | Tom Scanlan"
+  socialDescription="Build notes and practical writing about distributed systems, AT Protocol, infrastructure, and creating the open-source OpenMeet community platform."
+>
   <h1>Blog</h1>
   {posts.length === 0 ? (
     <p class="doc-meta">No posts yet.</p>

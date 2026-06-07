@@ -4,12 +4,16 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description?: string;
+  socialTitle?: string;
+  socialDescription?: string;
   type?: "website" | "article";
   image?: string;
 }
 const {
   title,
   description,
+  socialTitle = title,
+  socialDescription = description,
   type = "website",
   image = "/og-card.jpg",
 } = Astro.props;
@@ -28,16 +32,16 @@ const imageUrl = new URL(image, siteUrl);
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:site_name" content="Tom Scanlan" />
     <meta property="og:type" content={type} />
-    <meta property="og:title" content={title} />
-    {description && <meta property="og:description" content={description} />}
+    <meta property="og:title" content={socialTitle} />
+    {socialDescription && <meta property="og:description" content={socialDescription} />}
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={imageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="An abstract illustration of connected systems and infrastructure" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    {description && <meta name="twitter:description" content={description} />}
+    <meta name="twitter:title" content={socialTitle} />
+    {socialDescription && <meta name="twitter:description" content={socialDescription} />}
     <meta name="twitter:image" content={imageUrl} />
     <meta name="twitter:image:alt" content="An abstract illustration of connected systems and infrastructure" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
