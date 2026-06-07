@@ -1,15 +1,20 @@
+/* ---- color tokens ---- */
+
 :root {
+  /* light defaults */
   --fg: #1a1a1a;
   --fg-muted: #555;
   --bg: #fafaf7;
   --accent: #2b5d3a;
   --rule: #e5e3dc;
   --code-bg: #f0eee6;
+
   --max-width: 42rem;
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "JetBrains Mono", Menlo, monospace;
 }
 
+/* Follow system preference when no explicit choice is set. */
 @media (prefers-color-scheme: dark) {
   :root {
     --fg: #e8e6df;
@@ -19,6 +24,25 @@
     --rule: #2b2a25;
     --code-bg: #1f1e1a;
   }
+}
+
+/* Explicit overrides — set by the toggle. Higher specificity than :root
+   and ordered after the media query, so these always win when present. */
+:root[data-theme="light"] {
+  --fg: #1a1a1a;
+  --fg-muted: #555;
+  --bg: #fafaf7;
+  --accent: #2b5d3a;
+  --rule: #e5e3dc;
+  --code-bg: #f0eee6;
+}
+:root[data-theme="dark"] {
+  --fg: #e8e6df;
+  --fg-muted: #999592;
+  --bg: #14130f;
+  --accent: #8fb89a;
+  --rule: #2b2a25;
+  --code-bg: #1f1e1a;
 }
 
 * { box-sizing: border-box; }
@@ -59,6 +83,32 @@ header.site nav a {
   margin-left: 1rem;
 }
 header.site nav a:hover { color: var(--accent); }
+
+/* ---- theme toggle ---- */
+
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 0.3rem 0.4rem;
+  margin-left: 1rem;
+  cursor: pointer;
+  color: var(--fg-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  transition: color 0.15s, border-color 0.15s;
+}
+.theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+.theme-toggle svg { width: 1rem; height: 1rem; display: none; }
+
+/* Show exactly one icon based on the current selected mode. */
+:root[data-theme-mode="system"] .theme-toggle .icon-system,
+:root[data-theme-mode="light"] .theme-toggle .icon-sun,
+:root[data-theme-mode="dark"] .theme-toggle .icon-moon { display: inline-block; }
+/* Pre-paint fallback before the script runs. */
+:root:not([data-theme-mode]) .theme-toggle .icon-system { display: inline-block; }
 
 footer.site {
   max-width: var(--max-width);

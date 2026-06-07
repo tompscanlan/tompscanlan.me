@@ -69,7 +69,13 @@ async function listRecords<T>(collection: string): Promise<Array<{ uri: string; 
   return all;
 }
 
+const USE_LOCAL = process.env.LOCAL_CONTENT === "1";
+
 export async function fetchPublication(): Promise<{ rkey: string; uri: string; record: PublicationRecord } | null> {
+  if (USE_LOCAL) {
+    const { readLocalPublication } = await import("./local");
+    return readLocalPublication();
+  }
   const records = await listRecords<PublicationRecord>(PUBLICATION_NSID);
   const match = records.find((r) => r.value.url === CANONICAL_URL);
   if (!match) return null;
@@ -77,6 +83,10 @@ export async function fetchPublication(): Promise<{ rkey: string; uri: string; r
 }
 
 export async function fetchDocuments(): Promise<Document[]> {
+  if (USE_LOCAL) {
+    const { readLocalDocuments } = await import("./local");
+    return readLocalDocuments();
+  }
   const records = await listRecords<DocumentRecord>(DOCUMENT_NSID);
   const ourSiteUri = `at://${DID}/${PUBLICATION_NSID}/`;
   return records
