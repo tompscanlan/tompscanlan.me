@@ -12,6 +12,11 @@
  *   list                       List all publication + document records currently in the PDS.
  *   delete <collection> <rkey> Delete a record.
  *
+ * Flags:
+ *   --no-deploy   After publishing, do NOT git-commit-and-push to trigger CF rebuild.
+ *                 By default, successful site/doc/delete operations create an empty commit on main
+ *                 and push it, which makes CF Workers Builds rebuild the site against fresh PDS state.
+ *
  * Document markdown frontmatter (all optional except marked):
  *   ---
  *   title: My Post                          # required
@@ -23,6 +28,7 @@
  */
 import { AtpAgent } from "@atproto/api";
 import matter from "gray-matter";
+import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
@@ -86,6 +92,43 @@ async function getExistingRkey(
   return match?.uri.split("/").pop();
 }
 
+/**
+ * Trigger a Cloudflare rebuild by creating an empty commit and pushing.
+ * CF Workers Builds (Assets-only) doesn't expose deploy hooks, so git push
+ * is our trigger. No-op when --no-deploy is passed or when not on main with
+ * a clean working tree.
+ */
+function triggerDeploy(message: string): void {
+  if (process.argv.includes("--no-deploy")) {
+    console.log("  (--no-deploy: skipping CF rebuild trigger)");
+    return;
+  }
+  const run = (args: string[]) =>
+    spawnSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+
+  const branch = run(["rev-parse", "--abbrev-ref", "HEAD"]).stdout.trim();
+  if (branch !== "main") {
+    console.log(`  (on branch '${branch}', not 'main': skipping CF rebuild)`);
+    return;
+  }
+  const dirty = run(["status", "--porcelain"]).stdout.trim();
+  if (dirty) {
+    console.log("  (working tree has uncommitted changes: skipping CF rebuild — commit & push manually)");
+    return;
+  }
+  const commit = run(["commit", "--allow-empty", "-m", message]);
+  if (commit.status !== 0) {
+    console.log(`  (git commit failed: ${commit.stderr.trim()})`);
+    return;
+  }
+  const push = run(["push"]);
+  if (push.status !== 0) {
+    console.log(`  (git push failed: ${push.stderr.trim()})`);
+    return;
+  }
+  console.log("  → pushed empty commit; CF rebuild starting");
+}
+
 async function publishSite(): Promise<void> {
   const agent = await login();
   const record = {
@@ -101,6 +144,7 @@ async function publishSite(): Promise<void> {
     record,
   });
   console.log(`✓ Publication record at ${res.data.uri}`);
+  triggerDeploy(`Republish: ${PUBLICATION_NSID} (publication metadata)`);
 }
 
 async function publishDoc(filePath: string): Promise<void> {
@@ -165,6 +209,7 @@ async function publishDoc(filePath: string): Promise<void> {
   console.log(`✓ Document at ${res.data.uri}`);
   console.log(`  path: ${path}`);
   console.log(`  rkey: ${finalRkey} ${existingRkey ? "(updated)" : "(new)"}`);
+  triggerDeploy(`Republish: ${path} (${existingRkey ? "updated" : "new"})`);
 }
 
 async function listAll(): Promise<void> {
@@ -192,6 +237,7 @@ async function deleteRecord(collection: string, rkey: string): Promise<void> {
     rkey,
   });
   console.log(`✓ Deleted at://${DID}/${collection}/${rkey}`);
+  triggerDeploy(`Republish: deleted ${collection}/${rkey}`);
 }
 
 async function main(): Promise<void> {

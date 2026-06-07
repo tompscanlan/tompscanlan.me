@@ -71,10 +71,14 @@ npm run build                                 # site now builds
 ## Publishing flow
 
 1. Write a new markdown file in `content/blog/<slug>.md` with frontmatter
-2. `npm run publish:doc content/blog/<slug>.md`
-3. Push to GitHub — Cloudflare Pages rebuilds and serves the new post
+2. `npm run publish:doc content/blog/<slug>.md` — writes the record to PDS, then auto-creates an empty `git commit` on `main` and `git push`es it
+3. Cloudflare Workers Builds sees the push and rebuilds (~30–60s)
 
 The publish script is path-idempotent: re-publishing a file updates the same record (and sets `updatedAt`). Records you delete locally are not removed from PDS — use `npm run publish:list` then `tsx scripts/publish.ts delete site.standard.document <rkey>`.
+
+**Why the empty commit?** CF Workers Builds (Assets-only) doesn't expose deploy hooks, so git push is the trigger. The empty commit is also a useful audit trail — git history shows when each PDS record was last republished. Pass `--no-deploy` to skip the commit/push (e.g. when publishing a batch).
+
+The auto-commit/push only fires when the working tree is clean and you're on `main`. Otherwise the script logs why and lets you handle it.
 
 ## Why not just put markdown in the repo?
 
