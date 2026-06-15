@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tompscanlan.me/sitemap-index.xml
