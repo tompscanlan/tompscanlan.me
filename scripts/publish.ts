@@ -27,6 +27,7 @@
  *   ---
  */
 import { AtpAgent } from "@atproto/api";
+import { TID } from "@atproto/common-web";
 import matter from "gray-matter";
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -44,10 +45,6 @@ const SITE_CONFIG = {
   description:
     "Principal engineer — 25+ years building production systems. Founder of OpenMeet.",
 };
-
-function pathToRkey(path: string): string {
-  return path.replace(/^\/+/, "").replace(/\/+/g, ".").replace(/[^a-zA-Z0-9_~.:-]/g, "-");
-}
 
 function extractPlainText(md: string): string {
   return md
@@ -159,17 +156,16 @@ async function publishDoc(filePath: string): Promise<void> {
     throw new Error(`Frontmatter missing 'path' (e.g. /blog/my-post) in ${filePath}`);
   }
   const path = fm.path.startsWith("/") ? fm.path : `/${fm.path}`;
-  const rkey = pathToRkey(path);
-
   const agent = await login();
 
   // If an existing record has this path, keep its rkey so updates are idempotent.
+  // A new document gets a TID: site.standard.document's lexicon requires TID record keys.
   const existingRkey = await getExistingRkey(
     agent,
     DOCUMENT_NSID,
     (r) => (r.value as { path?: string }).path === path
   );
-  const finalRkey = existingRkey ?? rkey;
+  const finalRkey = existingRkey ?? TID.nextStr();
 
   const publishedAt =
     typeof fm.publishedAt === "string"
