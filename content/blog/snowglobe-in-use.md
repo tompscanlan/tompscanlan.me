@@ -19,7 +19,7 @@ what runs. Nothing in it reaches Bluesky's network.
 
 Every service gets a real https name under `local.snowglobe.at`, with a certificate from a CA the
 snowglobe makes for itself. So handles, DID documents and OAuth sign-in work the way they do on the
-real network. An app runs in a snowglobe with no test-only code.
+real network. An app only needs to take the network's addresses, like its PLC directory, as settings.
 
 I built it because I kept wanting to try things that could hurt real users if they went wrong: a
 lexicon that is still a draft, a new PDS build, a new sign-in flow.
@@ -138,8 +138,8 @@ Other people wanted this too. Bluesky's
 [dev-env](https://github.com/bluesky-social/atproto/tree/main/packages/dev-env),
 [testnet](https://github.com/verdverm/testnet) and
 [Atmosphere in a Box](https://tangled.org/kandake.africa/atmosphereinabox) also run atproto services
-for testing. Snowglobe's focus is real https names, so apps run unchanged, and one file you keep
-with your project.
+for testing. Snowglobe's focus is real https names, so OAuth works the way it does on the real
+network, and one file you keep with your project.
 
 If you're testing something on atproto, I'd like to help you get it running in a snowglobe. Reply to
 me on Bluesky at [@tompscanlan.bsky.social](https://bsky.app/profile/tompscanlan.bsky.social), or
