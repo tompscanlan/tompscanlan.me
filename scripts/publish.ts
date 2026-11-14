@@ -7,11 +7,11 @@
  *   ATPROTO_APP_PASSWORD  app password from bsky.app/settings/app-passwords
  *
  * Subcommands:
- *   site                       Create/update the site.standard.publication record (rkey=self).
+ *   site                       Create/update the site.standard.publication record (found by url).
  *   doc <markdown-file>        Create/update a site.standard.document from a .md file with frontmatter.
  *   list                       List all publication + document records currently in the PDS.
  *   delete <collection> <rkey> Delete a record.
- *   rekey [--dry-run]          Move this site's documents whose record keys are not TIDs onto TID keys.
+ *   rekey [--dry-run]          Move this site's publication and documents off non-TID record keys.
  *
  * Flags:
  *   --dry-run     rekey only: list the documents it would move, without logging in or writing.
@@ -28,7 +28,7 @@
  *   tags: [atproto, build-log]
  *   ---
  */
-import { AtpAgent } from "@atproto/api";
+import { AtpAgent, type ComAtprotoRepoApplyWrites } from "@atproto/api";
 import { TID } from "@atproto/common-web";
 import matter from "gray-matter";
 import { spawnSync } from "node:child_process";
@@ -39,7 +39,7 @@ const DID = "did:plc:cfo32kiwdectu33qzoyvrxex";
 const PDS_SERVICE = "https://bsky.social";
 const PUBLICATION_NSID = "site.standard.publication";
 const DOCUMENT_NSID = "site.standard.document";
-const PUBLICATION_RKEY = "self";
+const PDS_READ = "https://enoki.us-east.host.bsky.network";
 
 // atproto TID syntax (https://atproto.com/specs/tid). TID.is() from common-web only checks the
 // length, so a 13-character slug would pass it.
@@ -150,8 +150,37 @@ function triggerDeploy(message: string): void {
   console.log("  → pushed empty commit; CF rebuild starting");
 }
 
+type RepoRecord = { rkey: string; value: Record<string, unknown> };
+
+/** Every record in one of this repo's collections, read from the PDS without logging in. */
+async function listCollection(collection: string): Promise<RepoRecord[]> {
+  const reader = new AtpAgent({ service: PDS_READ });
+  const out: RepoRecord[] = [];
+  let cursor: string | undefined;
+  do {
+    const res = await reader.com.atproto.repo.listRecords({ repo: DID, collection, limit: 100, cursor });
+    for (const r of res.data.records) {
+      out.push({ rkey: r.uri.split("/").pop()!, value: r.value as Record<string, unknown> });
+    }
+    cursor = res.data.cursor;
+  } while (cursor);
+  return out;
+}
+
+/** This site's publication: the record whose url is the site's (blento.app keeps another one). */
+async function findPublication(): Promise<RepoRecord | undefined> {
+  return (await listCollection(PUBLICATION_NSID)).find((r) => r.value.url === SITE_CONFIG.url);
+}
+
 async function publishSite(): Promise<void> {
   const agent = await login();
+  const existing = await findPublication();
+  if (existing && !TID_PATTERN.test(existing.rkey)) {
+    throw new Error(
+      `The publication is stored under record key '${existing.rkey}', which is not a TID. ` +
+        `Run 'tsx scripts/publish.ts rekey' first, then publish again.`
+    );
+  }
   const record = {
     $type: PUBLICATION_NSID,
     url: SITE_CONFIG.url,
@@ -161,7 +190,7 @@ async function publishSite(): Promise<void> {
   const res = await agent.com.atproto.repo.putRecord({
     repo: DID,
     collection: PUBLICATION_NSID,
-    rkey: PUBLICATION_RKEY,
+    rkey: existing?.rkey ?? TID.nextStr(),
     record,
   });
   console.log(`✓ Publication record at ${res.data.uri}`);
@@ -181,6 +210,10 @@ async function publishDoc(filePath: string): Promise<void> {
   }
   const path = fm.path.startsWith("/") ? fm.path : `/${fm.path}`;
   const agent = await login();
+  const publication = await findPublication();
+  if (!publication) {
+    throw new Error(`No ${PUBLICATION_NSID} record with url ${SITE_CONFIG.url}; run 'publish.ts site' first.`);
+  }
 
   // If an existing record has this path, keep its rkey so updates are idempotent.
   // A new document gets a TID: site.standard.document's lexicon requires TID record keys.
@@ -217,7 +250,7 @@ async function publishDoc(filePath: string): Promise<void> {
 
   const record: Record<string, unknown> = {
     $type: DOCUMENT_NSID,
-    site: `at://${DID}/${PUBLICATION_NSID}/${PUBLICATION_RKEY}`,
+    site: `at://${DID}/${PUBLICATION_NSID}/${publication.rkey}`,
     title: fm.title,
     publishedAt,
     path,
@@ -272,77 +305,76 @@ async function deleteRecord(collection: string, rkey: string): Promise<void> {
 }
 
 /**
- * Move this site's documents off non-TID record keys (the 2026-06 slug keys such as
- * 'resume' and 'blog.launching'). site.standard.document's lexicon requires TID keys and
- * the PDS now refuses writes to the old ones. Each move is a single applyWrites call that
- * creates the unchanged record under a new TID and deletes the old key, so the repo never
- * holds two records for one path. The documents' AT-URIs change; the site rebuild that
- * follows puts the new ones in each page's site.standard.document link tag.
+ * Move this site's records off non-TID record keys: the publication (2026-06 key 'self') and
+ * documents published then under slug keys ('resume', 'blog.launching'). The lexicons require
+ * TID keys and the PDS refuses writes to the old ones. Everything moves in ONE applyWrites call,
+ * so the repo never holds two records for one path, or a document whose publication is gone.
+ * Values are copied unchanged, except that documents point at the publication's new AT-URI
+ * when it moves. The AT-URIs change; the site rebuild that follows puts the new ones in the
+ * well-known file and each page's link tag.
  *
- * The new key's time is the document's publishedAt, not the moment of the move, so record
- * keys keep sorting by publish date.
+ * New keys take their time from a date, not the moment of the move, so keys sort by publish
+ * date: a document's own publishedAt, and for the publication its earliest document's.
  */
-async function rekeyDocs(dryRun: boolean): Promise<void> {
-  const reader = new AtpAgent({ service: "https://enoki.us-east.host.bsky.network" });
-  const ourSite = `at://${DID}/${PUBLICATION_NSID}/`;
-  const toMove: Array<{ rkey: string; value: Record<string, unknown> }> = [];
-  const taken = new Set<string>();
-  let cursor: string | undefined;
-  do {
-    const res = await reader.com.atproto.repo.listRecords({
-      repo: DID,
-      collection: DOCUMENT_NSID,
-      limit: 100,
-      cursor,
-    });
-    for (const r of res.data.records) {
-      const rkey = r.uri.split("/").pop()!;
-      taken.add(rkey);
-      const value = r.value as Record<string, unknown>;
-      const site = typeof value.site === "string" ? value.site : "";
-      if (site.startsWith(ourSite) && !TID_PATTERN.test(rkey)) toMove.push({ rkey, value });
-    }
-    cursor = res.data.cursor;
-  } while (cursor);
+async function rekey(dryRun: boolean): Promise<void> {
+  const pubs = await listCollection(PUBLICATION_NSID);
+  const docs = await listCollection(DOCUMENT_NSID);
+  const pub = pubs.find((r) => r.value.url === SITE_CONFIG.url);
+  if (!pub) throw new Error(`No ${PUBLICATION_NSID} record with url ${SITE_CONFIG.url}`);
+  const oldSite = `at://${DID}/${PUBLICATION_NSID}/${pub.rkey}`;
+  const ours = docs.filter((d) => d.value.site === oldSite);
 
-  if (toMove.length === 0) {
-    console.log("No documents on non-TID record keys.");
+  let newPubRkey = pub.rkey;
+  if (!TID_PATTERN.test(pub.rkey)) {
+    const earliest = ours.map((d) => String(d.value.publishedAt)).sort()[0] ?? new Date().toISOString();
+    // Skip document keys too: the same string in two collections is legal but confusing.
+    newPubRkey = tidAt(earliest, new Set([...pubs, ...docs].map((r) => r.rkey)));
+  }
+  const newSite = `at://${DID}/${PUBLICATION_NSID}/${newPubRkey}`;
+  const docTaken = new Set(docs.map((d) => d.rkey));
+
+  const writes: ComAtprotoRepoApplyWrites.InputSchema["writes"] = [];
+  const plan: string[] = [];
+  if (newSite !== oldSite) {
+    writes.push({
+      $type: "com.atproto.repo.applyWrites#create",
+      collection: PUBLICATION_NSID,
+      rkey: newPubRkey,
+      value: pub.value,
+    });
+    plan.push(`publication: ${pub.rkey} → ${newPubRkey}`);
+  }
+  for (const d of ours) {
+    const value = { ...d.value, site: newSite };
+    if (!TID_PATTERN.test(d.rkey)) {
+      const rkey = tidAt(String(d.value.publishedAt), docTaken);
+      writes.push(
+        { $type: "com.atproto.repo.applyWrites#create", collection: DOCUMENT_NSID, rkey, value },
+        { $type: "com.atproto.repo.applyWrites#delete", collection: DOCUMENT_NSID, rkey: d.rkey }
+      );
+      plan.push(`${d.value.path}: ${d.rkey} → ${rkey}`);
+    } else if (newSite !== oldSite) {
+      writes.push({ $type: "com.atproto.repo.applyWrites#update", collection: DOCUMENT_NSID, rkey: d.rkey, value });
+      plan.push(`${d.value.path}: ${d.rkey} now points at publication ${newPubRkey}`);
+    }
+  }
+  if (newSite !== oldSite) {
+    writes.push({ $type: "com.atproto.repo.applyWrites#delete", collection: PUBLICATION_NSID, rkey: pub.rkey });
+  }
+
+  if (writes.length === 0) {
+    console.log("Nothing on non-TID record keys.");
     return;
   }
-  const moves = toMove.map(({ rkey, value }) => ({
-    rkey,
-    value,
-    newRkey: tidAt(String(value.publishedAt), taken),
-  }));
   if (dryRun) {
-    for (const { rkey, newRkey, value } of moves) {
-      console.log(`  would move ${rkey} → ${newRkey}\t${value.path ?? ""}\t(publishedAt ${value.publishedAt})`);
-    }
-    console.log(`(--dry-run: ${moves.length} document(s), nothing written)`);
+    for (const line of plan) console.log(`  would move ${line}`);
+    console.log(`(--dry-run: ${writes.length} write(s) in one applyWrites, nothing written)`);
     return;
   }
-
   const agent = await login();
-  for (const { rkey, newRkey, value } of moves) {
-    await agent.com.atproto.repo.applyWrites({
-      repo: DID,
-      writes: [
-        {
-          $type: "com.atproto.repo.applyWrites#create",
-          collection: DOCUMENT_NSID,
-          rkey: newRkey,
-          value,
-        },
-        {
-          $type: "com.atproto.repo.applyWrites#delete",
-          collection: DOCUMENT_NSID,
-          rkey,
-        },
-      ],
-    });
-    console.log(`✓ ${value.path ?? ""}: ${rkey} → ${newRkey}`);
-  }
-  triggerDeploy(`Republish: moved ${toMove.length} document(s) to TID record keys`);
+  await agent.com.atproto.repo.applyWrites({ repo: DID, writes });
+  for (const line of plan) console.log(`✓ ${line}`);
+  triggerDeploy(`Republish: moved records to TID keys (${plan.length} change(s))`);
 }
 
 async function main(): Promise<void> {
@@ -365,7 +397,7 @@ async function main(): Promise<void> {
       await deleteRecord(rest[0], rest[1]);
       break;
     case "rekey":
-      await rekeyDocs(rest.includes("--dry-run"));
+      await rekey(rest.includes("--dry-run"));
       break;
     default:
       console.error(

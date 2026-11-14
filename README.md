@@ -5,7 +5,7 @@ Personal site backed by AT Protocol. Every page on the site is a record in my PD
 ## Architecture
 
 - **Content lives in PDS.** DID `did:plc:cfo32kiwdectu33qzoyvrxex` at `enoki.us-east.host.bsky.network`. Two collections:
-  - `site.standard.publication` — site metadata (one record, rkey `self`)
+  - `site.standard.publication` — site metadata (one record, TID key, found by its `url`)
   - `site.standard.document` — every page, with `path`, `title`, `publishedAt`, and a `content` union holding markdown
 - **Lexicons:** [standard.site](https://standard.site). Same lexicons used by Leaflet.pub, Pckt.blog, Offprint.
 - **Site:** [Astro](https://astro.build) static. `src/lib/atproto.ts` calls `com.atproto.repo.listRecords` at build time; pages render the records.
@@ -54,7 +54,7 @@ npm run publish:site                              # create/update publication re
 npm run publish:doc content/resume.md             # publish/update a document
 npm run publish:doc content/blog/hello.md
 npm run publish:list                              # list current records
-npx tsx scripts/publish.ts rekey --dry-run        # documents still on non-TID keys
+npx tsx scripts/publish.ts rekey --dry-run        # publication/documents still on non-TID keys
 npx tsx scripts/publish.ts rekey                  # move them to TID keys (changes their AT-URIs)
 ```
 
