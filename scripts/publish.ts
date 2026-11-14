@@ -45,6 +45,23 @@ const PUBLICATION_RKEY = "self";
 // length, so a 13-character slug would pass it.
 const TID_PATTERN = /^[234567abcdefghij][234567abcdefghijklmnopqrstuvwxyz]{12}$/;
 
+/**
+ * A TID whose time is `iso` (TIDs count microseconds since the epoch), stepped forward a
+ * microsecond at a time past any key in `taken`, so two documents with the same publishedAt
+ * still get distinct keys. The chosen key is added to `taken`.
+ */
+function tidAt(iso: string, taken: Set<string>): string {
+  const ms = Date.parse(iso);
+  if (Number.isNaN(ms)) throw new Error(`publishedAt '${iso}' is not a date`);
+  for (let micros = ms * 1000; ; micros++) {
+    const tid = TID.fromTime(micros, 0).toString();
+    if (!taken.has(tid)) {
+      taken.add(tid);
+      return tid;
+    }
+  }
+}
+
 const SITE_CONFIG = {
   url: "https://tompscanlan.me",
   name: "Tom Scanlan",
@@ -255,11 +272,15 @@ async function deleteRecord(collection: string, rkey: string): Promise<void> {
  * creates the unchanged record under a new TID and deletes the old key, so the repo never
  * holds two records for one path. The documents' AT-URIs change; the site rebuild that
  * follows puts the new ones in each page's site.standard.document link tag.
+ *
+ * The new key's time is the document's publishedAt, not the moment of the move, so record
+ * keys keep sorting by publish date.
  */
 async function rekeyDocs(dryRun: boolean): Promise<void> {
   const reader = new AtpAgent({ service: "https://enoki.us-east.host.bsky.network" });
   const ourSite = `at://${DID}/${PUBLICATION_NSID}/`;
   const toMove: Array<{ rkey: string; value: Record<string, unknown> }> = [];
+  const taken = new Set<string>();
   let cursor: string | undefined;
   do {
     const res = await reader.com.atproto.repo.listRecords({
@@ -270,6 +291,7 @@ async function rekeyDocs(dryRun: boolean): Promise<void> {
     });
     for (const r of res.data.records) {
       const rkey = r.uri.split("/").pop()!;
+      taken.add(rkey);
       const value = r.value as Record<string, unknown>;
       const site = typeof value.site === "string" ? value.site : "";
       if (site.startsWith(ourSite) && !TID_PATTERN.test(rkey)) toMove.push({ rkey, value });
@@ -281,17 +303,21 @@ async function rekeyDocs(dryRun: boolean): Promise<void> {
     console.log("No documents on non-TID record keys.");
     return;
   }
+  const moves = toMove.map(({ rkey, value }) => ({
+    rkey,
+    value,
+    newRkey: tidAt(String(value.publishedAt), taken),
+  }));
   if (dryRun) {
-    for (const { rkey, value } of toMove) console.log(`  would move ${rkey}\t${value.path ?? ""}`);
-    console.log(`(--dry-run: ${toMove.length} document(s), nothing written)`);
+    for (const { rkey, newRkey, value } of moves) {
+      console.log(`  would move ${rkey} → ${newRkey}\t${value.path ?? ""}\t(publishedAt ${value.publishedAt})`);
+    }
+    console.log(`(--dry-run: ${moves.length} document(s), nothing written)`);
     return;
   }
 
   const agent = await login();
-  let prev: string | undefined;
-  for (const { rkey, value } of toMove) {
-    const newRkey = TID.nextStr(prev);
-    prev = newRkey;
+  for (const { rkey, newRkey, value } of moves) {
     await agent.com.atproto.repo.applyWrites({
       repo: DID,
       writes: [
