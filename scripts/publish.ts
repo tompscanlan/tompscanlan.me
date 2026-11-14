@@ -11,8 +11,10 @@
  *   doc <markdown-file>        Create/update a site.standard.document from a .md file with frontmatter.
  *   list                       List all publication + document records currently in the PDS.
  *   delete <collection> <rkey> Delete a record.
+ *   rekey [--dry-run]          Move this site's documents whose record keys are not TIDs onto TID keys.
  *
  * Flags:
+ *   --dry-run     rekey only: list the documents it would move, without logging in or writing.
  *   --no-deploy   After publishing, do NOT git-commit-and-push to trigger CF rebuild.
  *                 By default, successful site/doc/delete operations create an empty commit on main
  *                 and push it, which makes CF Workers Builds rebuild the site against fresh PDS state.
@@ -38,6 +40,10 @@ const PDS_SERVICE = "https://bsky.social";
 const PUBLICATION_NSID = "site.standard.publication";
 const DOCUMENT_NSID = "site.standard.document";
 const PUBLICATION_RKEY = "self";
+
+// atproto TID syntax (https://atproto.com/specs/tid). TID.is() from common-web only checks the
+// length, so a 13-character slug would pass it.
+const TID_PATTERN = /^[234567abcdefghij][234567abcdefghijklmnopqrstuvwxyz]{12}$/;
 
 const SITE_CONFIG = {
   url: "https://tompscanlan.me",
@@ -165,6 +171,12 @@ async function publishDoc(filePath: string): Promise<void> {
     DOCUMENT_NSID,
     (r) => (r.value as { path?: string }).path === path
   );
+  if (existingRkey && !TID_PATTERN.test(existingRkey)) {
+    throw new Error(
+      `${path} is stored under record key '${existingRkey}', which is not a TID; the PDS refuses ` +
+        `writes to it. Run 'tsx scripts/publish.ts rekey' first, then publish again.`
+    );
+  }
   const finalRkey = existingRkey ?? TID.nextStr();
 
   const publishedAt =
@@ -236,6 +248,71 @@ async function deleteRecord(collection: string, rkey: string): Promise<void> {
   triggerDeploy(`Republish: deleted ${collection}/${rkey}`);
 }
 
+/**
+ * Move this site's documents off non-TID record keys (the 2026-06 slug keys such as
+ * 'resume' and 'blog.launching'). site.standard.document's lexicon requires TID keys and
+ * the PDS now refuses writes to the old ones. Each move is a single applyWrites call that
+ * creates the unchanged record under a new TID and deletes the old key, so the repo never
+ * holds two records for one path. The documents' AT-URIs change; the site rebuild that
+ * follows puts the new ones in each page's site.standard.document link tag.
+ */
+async function rekeyDocs(dryRun: boolean): Promise<void> {
+  const reader = new AtpAgent({ service: "https://enoki.us-east.host.bsky.network" });
+  const ourSite = `at://${DID}/${PUBLICATION_NSID}/`;
+  const toMove: Array<{ rkey: string; value: Record<string, unknown> }> = [];
+  let cursor: string | undefined;
+  do {
+    const res = await reader.com.atproto.repo.listRecords({
+      repo: DID,
+      collection: DOCUMENT_NSID,
+      limit: 100,
+      cursor,
+    });
+    for (const r of res.data.records) {
+      const rkey = r.uri.split("/").pop()!;
+      const value = r.value as Record<string, unknown>;
+      const site = typeof value.site === "string" ? value.site : "";
+      if (site.startsWith(ourSite) && !TID_PATTERN.test(rkey)) toMove.push({ rkey, value });
+    }
+    cursor = res.data.cursor;
+  } while (cursor);
+
+  if (toMove.length === 0) {
+    console.log("No documents on non-TID record keys.");
+    return;
+  }
+  if (dryRun) {
+    for (const { rkey, value } of toMove) console.log(`  would move ${rkey}\t${value.path ?? ""}`);
+    console.log(`(--dry-run: ${toMove.length} document(s), nothing written)`);
+    return;
+  }
+
+  const agent = await login();
+  let prev: string | undefined;
+  for (const { rkey, value } of toMove) {
+    const newRkey = TID.nextStr(prev);
+    prev = newRkey;
+    await agent.com.atproto.repo.applyWrites({
+      repo: DID,
+      writes: [
+        {
+          $type: "com.atproto.repo.applyWrites#create",
+          collection: DOCUMENT_NSID,
+          rkey: newRkey,
+          value,
+        },
+        {
+          $type: "com.atproto.repo.applyWrites#delete",
+          collection: DOCUMENT_NSID,
+          rkey,
+        },
+      ],
+    });
+    console.log(`✓ ${value.path ?? ""}: ${rkey} → ${newRkey}`);
+  }
+  triggerDeploy(`Republish: moved ${toMove.length} document(s) to TID record keys`);
+}
+
 async function main(): Promise<void> {
   const [, , cmd, ...rest] = process.argv;
   switch (cmd) {
@@ -255,9 +332,12 @@ async function main(): Promise<void> {
       }
       await deleteRecord(rest[0], rest[1]);
       break;
+    case "rekey":
+      await rekeyDocs(rest.includes("--dry-run"));
+      break;
     default:
       console.error(
-        "Usage:\n  publish.ts site\n  publish.ts doc <markdown-file>\n  publish.ts list\n  publish.ts delete <collection> <rkey>"
+        "Usage:\n  publish.ts site\n  publish.ts doc <markdown-file>\n  publish.ts list\n  publish.ts delete <collection> <rkey>\n  publish.ts rekey [--dry-run]"
       );
       process.exit(1);
   }

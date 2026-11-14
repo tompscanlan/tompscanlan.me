@@ -10,7 +10,8 @@ Personal site backed by AT Protocol. Every page on the site is a record in my PD
 - **Lexicons:** [standard.site](https://standard.site). Same lexicons used by Leaflet.pub, Pckt.blog, Offprint.
 - **Site:** [Astro](https://astro.build) static. `src/lib/atproto.ts` calls `com.atproto.repo.listRecords` at build time; pages render the records.
 - **Markdown content:** stored in the `content` union as `{ $type: "me.tompscanlan.content.markdown", markdown: "..." }`. `textContent` carries a plaintext fallback for readers that don't know the custom $type.
-- **Publish:** `scripts/publish.ts` — frontmatter + body in, `putRecord` out. Idempotent by `path`.
+- **Publish:** `scripts/publish.ts` — frontmatter + body in, `putRecord` out. Idempotent by `path`. Documents use TID record keys, which the lexicon requires and the PDS enforces.
+- **Verification:** `/.well-known/site.standard.publication` answers with the publication's AT-URI, and each document page carries `<link rel="site.standard.document" href="at://…">`. Some readers (docs.surf, and by every sample checked pckt.blog) list a self-hosted publication only when it proves ownership one of these ways; Leaflet lists it either way.
 - **Hosting:** Cloudflare Workers Builds with static Assets. Cloudflare authoritative DNS routes the apex custom domain to the Worker.
 
 ## Layout
@@ -53,6 +54,8 @@ npm run publish:site                              # create/update publication re
 npm run publish:doc content/resume.md             # publish/update a document
 npm run publish:doc content/blog/hello.md
 npm run publish:list                              # list current records
+npx tsx scripts/publish.ts rekey --dry-run        # documents still on non-TID keys
+npx tsx scripts/publish.ts rekey                  # move them to TID keys (changes their AT-URIs)
 ```
 
 ## First-time bootstrap
