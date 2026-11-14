@@ -3,6 +3,7 @@ title: "Snowglobe in use: a new spaces alpha, tested and live in a few hours"
 path: /blog/snowglobe-in-use
 description: How I use Snowglobe, a private atproto network, to move an app and a hosted demo to Bluesky's new spaces alpha before real users meet the changes.
 tags: [atproto, snowglobe, testing, build-log]
+publishedAt: "2026-11-13T20:14:34.037Z"
 ---
 
 Over the last year or so I built a tool I first called atproto-devnet. It runs a small atproto
