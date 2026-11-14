@@ -96,11 +96,11 @@ async function login(): Promise<AtpAgent> {
   return agent;
 }
 
-async function getExistingRkey(
+async function getExisting(
   agent: AtpAgent,
   collection: string,
   predicate: (rec: { value: Record<string, unknown> }) => boolean
-): Promise<string | undefined> {
+): Promise<{ rkey: string; value: Record<string, unknown> } | undefined> {
   const res = await agent.com.atproto.repo.listRecords({
     repo: DID,
     collection,
@@ -109,7 +109,8 @@ async function getExistingRkey(
   const match = res.data.records.find((r) =>
     predicate(r as unknown as { value: Record<string, unknown> })
   );
-  return match?.uri.split("/").pop();
+  if (!match) return undefined;
+  return { rkey: match.uri.split("/").pop()!, value: match.value as Record<string, unknown> };
 }
 
 /**
@@ -183,11 +184,12 @@ async function publishDoc(filePath: string): Promise<void> {
 
   // If an existing record has this path, keep its rkey so updates are idempotent.
   // A new document gets a TID: site.standard.document's lexicon requires TID record keys.
-  const existingRkey = await getExistingRkey(
+  const existing = await getExisting(
     agent,
     DOCUMENT_NSID,
     (r) => (r.value as { path?: string }).path === path
   );
+  const existingRkey = existing?.rkey;
   if (existingRkey && !TID_PATTERN.test(existingRkey)) {
     throw new Error(
       `${path} is stored under record key '${existingRkey}', which is not a TID; the PDS refuses ` +
@@ -196,12 +198,16 @@ async function publishDoc(filePath: string): Promise<void> {
   }
   const finalRkey = existingRkey ?? TID.nextStr();
 
+  // Frontmatter wins; otherwise an update keeps the record's own publishedAt, and only a
+  // first publish takes "now". (Republishing used to reset the date to now every time.)
   const publishedAt =
     typeof fm.publishedAt === "string"
       ? fm.publishedAt
       : fm.publishedAt instanceof Date
         ? fm.publishedAt.toISOString()
-        : new Date().toISOString();
+        : typeof existing?.value.publishedAt === "string"
+          ? existing.value.publishedAt
+          : new Date().toISOString();
 
   const tags: string[] | undefined = Array.isArray(fm.tags)
     ? fm.tags.map(String)
