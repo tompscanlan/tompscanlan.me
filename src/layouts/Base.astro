@@ -8,6 +8,8 @@ interface Props {
   socialDescription?: string;
   type?: "website" | "article";
   image?: string;
+  /** AT-URI of the site.standard.document this page renders (standard.site document verification). */
+  documentUri?: string;
 }
 const {
   title,
@@ -16,6 +18,7 @@ const {
   socialDescription = description,
   type = "website",
   image = "/og-card.jpg",
+  documentUri,
 } = Astro.props;
 const siteUrl = new URL("https://tompscanlan.me");
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl);
@@ -30,6 +33,7 @@ const imageUrl = new URL(image, siteUrl);
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonicalUrl} />
+    {documentUri && <link rel="site.standard.document" href={documentUri} />}
     <meta property="og:site_name" content="Tom Scanlan" />
     <meta property="og:type" content={type} />
     <meta property="og:title" content={socialTitle} />
