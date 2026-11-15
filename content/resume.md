@@ -39,6 +39,13 @@ Open-source, federated alternative to Meetup, removing the pricing barrier that 
 - Run the full delivery loop solo: GitHub Actions and ArgoCD, Terraform and Helm, Prometheus, Grafana and OpenTelemetry/Jaeger, TLS/PKI and Sealed Secrets, upgrades and incident response
 - Designed and shipped LLM features: a survey builder that turns a research question into a structured survey, and an event-ingestion pipeline that normalizes scraped pages and forwarded emails with cheap-model-first routing to bound per-request cost. Generation runs off the request path on RabbitMQ workers, with caching and graceful degradation when models are slow
 
+### Open-Source Work | 2023–Present
+
+- Created and maintain [Snowglobe](https://snowglobe.at), a private atproto network in Docker (PDS, PLC directory, relay, Jetstream, real TLS names) so apps can test OAuth, draft lexicons and new PDS builds before real users meet them. Published on npm, with a hosted public network at [lighthouse.snowglobe.at](https://lighthouse.snowglobe.at)
+- Merged 50+ pull requests in 2026 into other maintainers' atproto projects: [contrail](https://github.com/flo-bit/contrail), an atproto indexing library (PostgreSQL adapter, an end-to-end suite against a local atproto stack, ingest reliability fixes); [atmo.rsvp](https://atmo.rsvp), an events app (search, near-me geocoding, pagination, running on other atproto networks); atmo-kit; and Roomy (calendar integration)
+- Prototyping groups on AT Protocol against the draft community standard and Bluesky's permissioned-spaces alpha: a [group host](https://github.com/tompscanlan/atproto-group-host) and private events for atmo.rsvp
+- Earlier: 8 merged pull requests to Rust's package manager, cargo (2023), including a fix for index corruption when cargo is killed mid-write
+
 ### Senior Sales Engineering Architect, RackN | 2024
 
 Pre-sales role weighted ~75% toward engineering spikes that shipped as product features in Digital Rebar, a Go-based bare-metal provisioning platform.
