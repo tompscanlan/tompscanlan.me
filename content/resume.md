@@ -14,7 +14,7 @@ Principal platform engineer · Louisville, KY · Remote · Open to relocation
 
 ## Summary
 
-Principal platform engineer with 25+ years building and running production infrastructure, still hands-on every day. I run Kubernetes platforms end to end, from GitOps and monitoring to incident response. At VMware I cleared a year-long blocker that made a product eligible for $100M+ in U.S. federal contracts. Since 2024 I have run all of OpenMeet's production myself. When most of its accounts went invisible to the Bluesky network, I found the cause, and the limit was raised tenfold the same day.
+Principal platform engineer with 25+ years building and running production infrastructure, still hands-on every day. I run Kubernetes platforms end to end, from GitOps and monitoring to incident response. At VMware I cleared a year-long blocker that made a product eligible for $100M+ in U.S. federal contracts. Since 2024 I have run all of OpenMeet's production myself, including a move from AWS to DigitalOcean at about half the cost, with a few seconds of disruption at most.
 
 ## Experience
 
@@ -22,9 +22,9 @@ Principal platform engineer with 25+ years building and running production infra
 
 An open-source events and groups platform with 2,000+ users and its own AT Protocol server (the network behind Bluesky). I designed it and run all of its production infrastructure.
 
-- When 437 of 537 accounts went invisible to the Bluesky network, traced it to the relay (the service that collects posts from every server), which had started taking only 100 accounts per server. Filed a GitHub issue with the evidence, and the limit went to 1,000 the same day.
 - Moved all of production (API, Matrix chat, AT Protocol server, PostgreSQL, RabbitMQ, Redis) from AWS EKS to DigitalOcean in July 2026, for about half the hosting cost. Froze writes, restored from cold backups and checked that every count matched before the DNS cutover. Users saw a few seconds of disruption at most.
-- Run the platform end to end with GitOps (ArgoCD), Helm, Prometheus, Grafana and OpenTelemetry, upgrades and incident response. Prometheus alerts keep me ahead of trouble: when the incoming Bluesky feed goes quiet, an alert fires and the reader reconnects on its own.
+- Run the platform end to end with GitOps (ArgoCD), Helm, Prometheus, Grafana and OpenTelemetry, upgrades and incident response. Prometheus alerts keep me ahead of trouble. For example, an alert fires when the incoming Bluesky feed goes quiet, which means the ingest pipeline needs a look.
+- Traced why most of OpenMeet's accounts were invisible to the Bluesky network to a relay limit of 100 accounts per server, and filed the GitHub issue that got it raised.
 - Do most day-to-day engineering with coding agents (Claude Code) under a written process: tracked work, isolated worktrees, an independent review before each merge, and a weekly measure of where time is lost.
 
 ### Open Source | 2023–Present
