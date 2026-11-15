@@ -45,7 +45,7 @@ Open-source, federated alternative to Meetup, removing the pricing barrier that 
 - Created and maintain [Snowglobe](https://snowglobe.at), a private atproto network in Docker (PDS, PLC directory, relay, Jetstream, real TLS names) so apps can test OAuth, draft lexicons and new PDS builds before real users meet them. Published on npm, with a hosted public network at [lighthouse.snowglobe.at](https://lighthouse.snowglobe.at)
 - Merged 50+ pull requests in 2026 into other maintainers' atproto projects: [contrail](https://github.com/flo-bit/contrail), an atproto indexing library (PostgreSQL adapter, an end-to-end suite against a local atproto stack, ingest reliability fixes); [atmo.rsvp](https://atmo.rsvp), an events app (search, near-me geocoding, pagination, running on other atproto networks); atmo-kit; and Roomy (calendar integration)
 - Prototyping groups on AT Protocol against the draft community standard and Bluesky's permissioned-spaces alpha: a [group host](https://github.com/tompscanlan/atproto-group-host) and private events for atmo.rsvp
-- Earlier: 8 merged pull requests to Rust's package manager, cargo (2023), including a fix for index corruption when cargo is killed mid-write
+- Earlier: 8 merged pull requests to Rust's package manager, cargo (2023), including atomic writes so a `cargo add` or `cargo remove` stopped with Ctrl+C can't leave a half-written manifest
 
 ### Senior Sales Engineering Architect, RackN | 2024
 
