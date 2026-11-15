@@ -2,86 +2,69 @@
 title: Tom Scanlan — Resume
 path: /resume
 publishedAt: 2026-06-06T00:00:00.000Z
-description: Principal engineer with 25+ years building production software. Founder of OpenMeet.
+description: Principal platform engineer with 25+ years building and running production infrastructure.
 tags: [resume]
 ---
 
 # Tom Scanlan
 
-Principal engineer · Louisville, KY · Remote OK · Open to relocation
+Principal platform engineer · Louisville, KY · Remote OK · Open to relocation
 
 [tompscanlan@gmail.com](mailto:tompscanlan@gmail.com) · [github.com/tompscanlan](https://github.com/tompscanlan) · [linkedin.com/in/tomscanlan](https://www.linkedin.com/in/tomscanlan) · [openmeet.net](https://openmeet.net)
 
 ## Summary
 
-Hands-on principal engineer with 25+ years building and running production software, still writing code every day. My current work is on AT Protocol, the open network behind Bluesky. I run OpenMeet's production platform alone, maintain Snowglobe, an open-source test network for atproto apps, and merged 50+ pull requests into other maintainers' atproto projects in 2026. Before that, at VMware, I unlocked $100M+ in U.S. federal contract eligibility with ~2,000 lines of targeted Java, shipped into multimillion-line enterprise platforms, and mentored engineers through the cross-team problems that stall organizations.
-
-## Core Skills
-
-- **Languages** &nbsp;TypeScript, Go, Rust, Python, Java, shell
-- **AT Protocol** &nbsp;PDS hosting and operation, OAuth, lexicons, relays, Jetstream, PLC, permissioned spaces (alpha)
-- **Platform** &nbsp;Kubernetes, Docker, Helm, Terraform, Ansible, AWS, Azure, GCP, DigitalOcean, Cloudflare Workers and D1, bare-metal automation
-- **Delivery & Observability** &nbsp;GitHub Actions, ArgoCD, Prometheus, Grafana, OpenTelemetry, Jaeger, Loki
-- **Data & Messaging** &nbsp;PostgreSQL, Redis, Elasticsearch, RabbitMQ, Kafka, NATS, MQTT
-- **Security** &nbsp;TLS/PKI (cert-manager), Sealed Secrets, Kubernetes RBAC
-- **AI/LLM** &nbsp;OpenAI & Anthropic APIs, cost-bounded routing, async generation, prompt iteration, Claude Code
+Principal platform engineer with 25+ years building and running production infrastructure, still hands-on every day. I take Kubernetes platforms from Terraform and GitOps through observability to incident response. At VMware I cleared a year-long blocker that opened $100M+ in U.S. federal contract eligibility. Since 2024 I have built and run a production platform on my own, including a move from AWS to DigitalOcean with no second pair of hands.
 
 ## Experience
 
-### Founder & Principal Engineer, OpenMeet LLC | 2024–Present
+### Principal Engineer and Founder, OpenMeet | 2024–Present
 
-Open-source, federated alternative to Meetup, removing the pricing barrier that excludes grassroots community organizers. Sole architect and operator of a production system with 500+ accounts on its own AT Protocol PDS.
+An open-source events and groups platform for community organizers, with 500+ accounts on its own AT Protocol server (the network behind Bluesky). I designed it and run all of its production infrastructure.
 
-- Architected and built a six-service TypeScript/NestJS backend with a Quasar/Vue frontend; stateful workloads (PostgreSQL, Redis, RabbitMQ, Elasticsearch) on Kubernetes
-- Implemented AT Protocol federation, so every user has a real PDS account they can take with them; integrated Matrix for real-time community chat
-- Moved all of production (API, Matrix, PDS, PostgreSQL, RabbitMQ, Redis) from AWS EKS to DigitalOcean alone in July 2026, with a gated DNS cutover and the AWS stack torn down eight days later
-- Found why 437 of 537 OpenMeet accounts were invisible to the Bluesky network (a relay limit of 100 accounts per PDS) and made the case upstream; the limit was raised to 1,000 the same day and every account became visible
-- Run the full delivery loop solo: GitHub Actions and ArgoCD, Terraform and Helm, Prometheus, Grafana and OpenTelemetry/Jaeger, TLS/PKI and Sealed Secrets, upgrades and incident response
-- Designed and shipped LLM features: a survey builder that turns a research question into a structured survey, and an event-ingestion pipeline that normalizes scraped pages and forwarded emails with cheap-model-first routing to bound per-request cost. Generation runs off the request path on RabbitMQ workers, with caching and graceful degradation when models are slow
-- Do most day-to-day engineering with coding agents (Claude Code) under a written process: tracked work items, isolated worktrees, an independent review before each merge, and a weekly measure of where sessions lose time
+- Moved all of production (API, Matrix chat, AT Protocol server, PostgreSQL, RabbitMQ, Redis) from AWS EKS to DigitalOcean alone in July 2026, behind a gated DNS cutover. AWS was torn down eight days later.
+- Run the platform end to end: Kubernetes with GitOps (ArgoCD, GitHub Actions), Terraform and Helm, Prometheus, Grafana and OpenTelemetry, TLS/PKI and Sealed Secrets, upgrades and incident response.
+- Found why 437 of 537 accounts were invisible to the Bluesky network: a relay limit of 100 accounts per server. Made the case upstream, and the limit went to 1,000 the same day.
+- Built LLM features with bounded cost: cheap-model-first routing, generation off the request path on RabbitMQ workers, caching, and graceful degradation when models are slow.
+- Do most day-to-day engineering with coding agents (Claude Code) under a written process: tracked work, isolated worktrees, an independent review before each merge, and a weekly measure of where time is lost.
 
-### Open-Source Work | 2023–Present
+### Open Source | 2023–Present
 
-- Created and maintain [Snowglobe](https://snowglobe.at), a private atproto network in Docker (PDS, PLC directory, relay, Jetstream, real TLS names) so apps can test OAuth, draft lexicons and new PDS builds before real users meet them. Published on npm, with a hosted public network at [lighthouse.snowglobe.at](https://lighthouse.snowglobe.at)
-- Merged 50+ pull requests in 2026 into other maintainers' atproto projects: [contrail](https://github.com/flo-bit/contrail), an atproto indexing library (PostgreSQL adapter, an end-to-end suite against a local atproto stack, ingest reliability fixes); [atmo.rsvp](https://atmo.rsvp), an events app (search, near-me geocoding, pagination, running on other atproto networks); atmo-kit; and Roomy (calendar integration)
-- Prototyping groups on AT Protocol against the draft community standard and Bluesky's permissioned-spaces alpha: a [group host](https://github.com/tompscanlan/atproto-group-host) and private events for atmo.rsvp
-- Earlier: 8 merged pull requests to Rust's package manager, cargo (2023), including atomic writes so a `cargo add` or `cargo remove` stopped with Ctrl+C can't leave a half-written manifest
+- Built [Snowglobe](https://snowglobe.at), an open-source tool that runs a private AT Protocol network in Docker (servers, directory, relay, event stream, real TLS) so apps can test changes before real users meet them. Published on npm, with a hosted public network at [lighthouse.snowglobe.at](https://lighthouse.snowglobe.at).
+- 50+ merged pull requests in 2026 to other maintainers' projects, mostly ingest and search infrastructure: a PostgreSQL adapter and end-to-end test suites for [contrail](https://github.com/flo-bit/contrail), an AT Protocol indexer, and search, caching and reliability fixes for the [atmo.rsvp](https://atmo.rsvp) events app.
+- 8 merged pull requests to Rust's package manager, cargo (2023), including atomic writes so an interrupted `cargo add` can't leave a half-written manifest.
 
 ### Senior Sales Engineering Architect, RackN | 2024
 
-Sales engineering role that was mostly hands-on engineering: spikes that shipped as product features in Digital Rebar, a Go-based bare-metal provisioning platform.
+- Shipped Proxmox support in Digital Rebar, a Go bare-metal provisioning platform, and built provisioning automation from hardware bring-up to software configuration. A sales engineering role that was mostly hands-on engineering.
 
-- Developed and shipped Proxmox hypervisor support, extending out-of-the-box automation to a new class of infrastructure
-- Built deployment images and authored provisioning automations (shell, templated workflows) spanning hardware bring-up through software configuration
-- Diagnosed customer deployment issues live on support calls (PXE boot, networking, bare-metal lifecycle) and turned field feedback into platform fixes
+### VMware | 2014–2023 (joined through the MomentumSI acquisition)
 
-### Application Platforms Architect, VMware Inc. | 2020–2023
+**Application Platforms Architect, 2020–2023**
 
-- Identified and resolved year-long Azure Government Cloud blockers across a 60-service Kubernetes application, unlocking $100M+ in U.S. federal contract eligibility with ~2,000 lines of targeted Java
-- Shipped features into a multimillion-line enterprise platform serving 10,000+ global customers
-- Built a repeatable cross-functional process to identify and close 15 high-value product gaps ($5M+ each), converting ambiguous customer signals into shipped roadmap items
-- Mentored engineers across teams on system design, technical growth, and career development
+- Cleared a year-long blocker with no clear owner: Azure Government Cloud support for a 60-service Kubernetes application. About 2,000 lines of targeted Java opened $100M+ in U.S. federal contract eligibility.
+- Built a cross-team process that found and closed 15 product gaps worth $5M+ each, turning vague customer signals into shipped roadmap items.
+- Shipped features into a multimillion-line platform used by 10,000+ enterprise customers, and mentored engineers across teams.
 
-### Architect, Emerging Technology, VMware Inc. | 2018–2020
+**Architect, Emerging Technology, 2018–2020**
 
-- Built curriculum and hands-on training for ~3,000 consultants covering DevOps, Kubernetes, IoT, edge computing, and multi-cloud architectures
-- Built a working IoT ML pipeline (sensor data to trained classifiers to recommendations) as a teaching instrument demonstrating end-to-end ML integration and safe data-movement patterns
-- Developed DevOps and cloud-native practice capabilities adopted across a $1B professional services organization; published a weekly internal technical blog
+- Built hands-on Kubernetes, DevOps and edge training for ~3,000 consultants. The DevOps and cloud-native practice was adopted across a $1B professional services organization.
 
-### Senior Consultant, VMware Inc. (via MomentumSI acquisition) | 2014–2018
+**Senior Consultant, 2014–2018**
 
-- Introduced containers, Kubernetes, and modern DevOps practices to VMware PSO; trained hundreds of consultants
-- Delivered infrastructure reliability and automation engagements (configuration management, CI/CD, cloud migration) at Capital One, Comcast, FedEx, and similar large enterprises
+- Brought containers, Kubernetes and DevOps practice into VMware's professional services and trained hundreds of consultants. Delivered reliability and automation work at Capital One, Comcast and FedEx.
 
-## Early Career (1997–2014)
+## Earlier (1997–2014)
 
-**Senior Linux Systems Administrator, The Learning House (2013–2014).** Led IT for a $15M education platform; scaled storage throughput 10x, introduced Puppet/Git configuration management, automated cloud deploy/destroy cycles to cut hosting costs.
+Senior Linux systems administrator at The Learning House: led IT for a $15M education platform, scaled storage throughput 10x, and brought in Puppet and Git. Ran RiverSong Farm, a market garden and poultry operation (2008–2012). Embedded Linux at Iptivia, Sereniti and Reefedge: kernel patches, ports, PXE boot. Built and ran infrastructure in three datacenters at Corente and Ecampus.com. Co-founded SquareFish Media, acquired by a regional ISP.
 
-**Founder & Operator, RiverSong Farm (2008–2012).** Restored a fallow farm into a working market-garden and poultry operation; four years building something physical, end to end.
+## Skills
 
-**Embedded networking & systems software (2003–2007).** Senior Software Engineer at Iptivia, Sereniti, and Reefedge: Linux kernel patches, cross-platform ports, PXE boot systems.
-
-**Linux & network engineering (1999–2003).** Built and operated infrastructure across three datacenters at Corente and Ecampus.com. **Founder, SquareFish Media (1998–2000).** Co-founded a web/media startup; acquired by a regional ISP.
+- **Platform** &nbsp;Kubernetes, Helm, Terraform, Ansible, ArgoCD, GitHub Actions, Docker; AWS, Azure, GCP, DigitalOcean, Cloudflare Workers; bare metal
+- **Observability** &nbsp;Prometheus, Grafana, Loki, OpenTelemetry, Jaeger
+- **Data & Messaging** &nbsp;PostgreSQL, Redis, RabbitMQ, Kafka, NATS, Elasticsearch
+- **Languages** &nbsp;TypeScript, Go, Python, Rust, Java, shell
+- **Also** &nbsp;AT Protocol (servers, relays, OAuth), LLM integration (OpenAI and Anthropic APIs), TLS/PKI, Kubernetes RBAC
 
 ## Education
 
