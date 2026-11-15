@@ -48,7 +48,7 @@ Open-source, federated alternative to Meetup, removing the pricing barrier that 
 
 ### Senior Sales Engineering Architect, RackN | 2024
 
-Pre-sales role weighted ~75% toward engineering spikes that shipped as product features in Digital Rebar, a Go-based bare-metal provisioning platform.
+Sales engineering role that was mostly hands-on engineering: spikes that shipped as product features in Digital Rebar, a Go-based bare-metal provisioning platform.
 
 - Developed and shipped Proxmox hypervisor support, extending out-of-the-box automation to a new class of infrastructure
 - Built deployment images and authored provisioning automations (shell, templated workflows) spanning hardware bring-up through software configuration
