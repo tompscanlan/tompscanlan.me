@@ -25,7 +25,6 @@ An open-source events and groups platform with 2,000+ users and its own AT Proto
 - When 437 of 537 accounts went invisible to the Bluesky network, traced it to the relay (the service that collects posts from every server), which had started taking only 100 accounts per server. Filed a GitHub issue with the evidence, and the limit went to 1,000 the same day.
 - Moved all of production (API, Matrix chat, AT Protocol server, PostgreSQL, RabbitMQ, Redis) from AWS EKS to DigitalOcean in July 2026, for about half the hosting cost. Froze writes, restored from cold backups and checked that every count matched before the DNS cutover. Users saw a few seconds of disruption at most.
 - Run the platform end to end with GitOps (ArgoCD), Helm, Prometheus, Grafana and OpenTelemetry, upgrades and incident response. Prometheus alerts keep me ahead of trouble: when the incoming Bluesky feed goes quiet, an alert fires and the reader reconnects on its own.
-- Built LLM features that run off the request path on RabbitMQ workers, try a cheap model first, and degrade gracefully when models are slow.
 - Do most day-to-day engineering with coding agents (Claude Code) under a written process: tracked work, isolated worktrees, an independent review before each merge, and a weekly measure of where time is lost.
 
 ### Open Source | 2023–Present
