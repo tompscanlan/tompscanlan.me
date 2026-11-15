@@ -14,7 +14,7 @@ Principal platform engineer · Louisville, KY · Remote · Open to relocation
 
 ## Summary
 
-Principal platform engineer with 25+ years building and running production infrastructure, still hands-on every day. I take Kubernetes platforms from Terraform and GitOps through observability to incident response. At VMware I cleared a year-long blocker that opened $100M+ in U.S. federal contract eligibility. Since 2024 I have run all of OpenMeet's production myself. When most of its accounts went invisible to the Bluesky network, I found the cause and got the limit raised tenfold the same day.
+Principal platform engineer with 25+ years building and running production infrastructure, still hands-on every day. I run Kubernetes platforms end to end, from GitOps and monitoring to incident response. At VMware I cleared a year-long blocker that made a product eligible for $100M+ in U.S. federal contracts. Since 2024 I have run all of OpenMeet's production myself. When most of its accounts went invisible to the Bluesky network, I found the cause, and the limit was raised tenfold the same day.
 
 ## Experience
 
@@ -22,9 +22,9 @@ Principal platform engineer with 25+ years building and running production infra
 
 An open-source events and groups platform with 2,000+ users and its own AT Protocol server (the network behind Bluesky). I designed it and run all of its production infrastructure.
 
-- When 437 of 537 accounts went invisible to the Bluesky network, traced it to the relay (the service that collects posts from every server), which had started taking only 100 accounts per server. Made the case upstream, and the limit went to 1,000 the same day.
-- Planned and ran the move of all production (API, Matrix chat, AT Protocol server, PostgreSQL, RabbitMQ, Redis) from AWS EKS to DigitalOcean in July 2026: froze writes, restored from cold backups, and checked that every count matched before the DNS cutover. AWS was torn down eight days later.
-- Run the platform end to end with GitOps (ArgoCD), Terraform and Helm, Prometheus, Grafana and OpenTelemetry, upgrades and incident response.
+- When 437 of 537 accounts went invisible to the Bluesky network, traced it to the relay (the service that collects posts from every server), which had started taking only 100 accounts per server. Filed a GitHub issue with the evidence, and the limit went to 1,000 the same day.
+- Moved all of production (API, Matrix chat, AT Protocol server, PostgreSQL, RabbitMQ, Redis) from AWS EKS to DigitalOcean in July 2026, for about half the hosting cost. Froze writes, restored from cold backups and checked that every count matched before the DNS cutover. Users saw a few seconds of disruption at most.
+- Run the platform end to end with GitOps (ArgoCD), Helm, Prometheus, Grafana and OpenTelemetry, upgrades and incident response. Prometheus alerts keep me ahead of trouble: when the incoming Bluesky feed goes quiet, an alert fires and the reader reconnects on its own.
 - Built LLM features that run off the request path on RabbitMQ workers, try a cheap model first, and degrade gracefully when models are slow.
 - Do most day-to-day engineering with coding agents (Claude Code) under a written process: tracked work, isolated worktrees, an independent review before each merge, and a weekly measure of where time is lost.
 
@@ -43,9 +43,9 @@ An open-source events and groups platform with 2,000+ users and its own AT Proto
 
 **Application Platforms Architect, 2020–2023**
 
-- Cleared a year-long blocker with no clear owner: Azure Government Cloud support for a 60-service Kubernetes application. About 2,000 lines of targeted Java opened $100M+ in U.S. federal contract eligibility.
-- Built a cross-team process that found and closed 15 product gaps worth $5M+ each, turning vague customer signals into shipped roadmap items.
-- Shipped features into a multimillion-line platform used by 10,000+ enterprise customers, and mentored engineers across teams.
+- Cleared a year-long blocker with no clear owner: Azure Government Cloud support for a 60-service Kubernetes application. About 2,000 lines of targeted Java made it eligible for U.S. federal contracts worth $100M+.
+- Ran a cross-team process for stuck work: gathered customer pain from sales, matched it to each business unit's most valuable stalled requests, and shepherded 15 of them through to shipping.
+- Shipped features into vSphere and vRealize, multimillion-line platforms used by 10,000+ enterprise customers, and mentored engineers across teams.
 
 **Architect, Emerging Technology, 2018–2020**
 
