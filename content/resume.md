@@ -60,11 +60,9 @@ Senior Linux systems administrator at The Learning House: led IT for a $15M educ
 
 ## Skills
 
-- **Platform** &nbsp;Kubernetes, Helm, Terraform, Ansible, ArgoCD, GitHub Actions, Docker; AWS, Azure, GCP, DigitalOcean, Cloudflare Workers; bare metal
-- **Observability** &nbsp;Prometheus, Grafana, Loki, OpenTelemetry, Jaeger
-- **Data & Messaging** &nbsp;PostgreSQL, Redis, RabbitMQ, Kafka, NATS, Elasticsearch
-- **Languages** &nbsp;TypeScript, Go, Python, Rust, Java, shell
-- **Also** &nbsp;AT Protocol (servers, relays, OAuth), LLM integration (OpenAI and Anthropic APIs), TLS/PKI, Kubernetes RBAC
+- **Use now:** Kubernetes, Helm, ArgoCD, GitHub Actions, Docker, Prometheus, Grafana, OpenTelemetry, PostgreSQL, Redis, RabbitMQ, DigitalOcean, AWS, Cloudflare Workers, AT Protocol, OpenAI and Anthropic APIs
+- **Have used:** Terraform, Ansible, Puppet, Azure, GCP, Elasticsearch, Kafka, NATS, Loki, Jaeger, bare-metal provisioning
+- **Languages:** TypeScript, Go, Python, Rust, Java, shell
 
 ## Education
 
