@@ -8,7 +8,7 @@ tags: [resume]
 
 # Tom Scanlan
 
-Principal engineer · Louisville, KY · Remote
+Principal engineer · Louisville, KY · Remote OK · Open to relocation
 
 [tompscanlan@gmail.com](mailto:tompscanlan@gmail.com) · [github.com/tompscanlan](https://github.com/tompscanlan) · [linkedin.com/in/tomscanlan](https://www.linkedin.com/in/tomscanlan) · [openmeet.net](https://openmeet.net)
 
