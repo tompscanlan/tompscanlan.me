@@ -66,4 +66,4 @@ Senior Linux systems administrator at The Learning House: led IT for a $15M educ
 
 ## Education
 
-Computer Science, University of Kentucky (three years completed)
+University of Kentucky, Computer Science coursework
