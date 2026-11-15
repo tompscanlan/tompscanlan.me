@@ -30,14 +30,14 @@ Hands-on principal engineer with 25+ years building and running production softw
 
 ### Founder & Principal Engineer, OpenMeet LLC | 2024–Present
 
-Open-source, federated alternative to Meetup, removing the pricing barrier that excludes grassroots community organizers. Sole architect and operator of a production system, end to end.
+Open-source, federated alternative to Meetup, removing the pricing barrier that excludes grassroots community organizers. Sole architect and operator of a production system with 500+ accounts on its own AT Protocol PDS.
 
-- Architected and built a six-service TypeScript/NestJS backend with a Quasar/Vue frontend; stateful workloads (PostgreSQL, Redis, RabbitMQ, Elasticsearch) on self-hosted Kubernetes
-- Implemented AT Protocol federation for decentralized identity and data portability; integrated Matrix for real-time community chat
-- Run the full delivery loop solo: GitHub Actions and ArgoCD CI/CD, infrastructure-as-code (Terraform, Helm), and an observability stack (Prometheus, Grafana, OpenTelemetry/Jaeger) that supports same-day diagnosis of production incidents
-- Designed and shipped LLM-powered features: a survey builder that turns a research question into a structured survey, and an event-ingestion pipeline normalizing unstructured data (scraped pages, forwarded emails) via cheap-model-first, escalate-on-low-confidence routing that bounds per-request cost
-- Production LLM patterns: async generation off the request path via RabbitMQ workers, response caching, graceful UI degradation when models are slow or unavailable
-- Operate production infrastructure end to end: deployments, upgrades, capacity, incident response, and TLS/PKI plus Sealed Secrets-based secrets management
+- Architected and built a six-service TypeScript/NestJS backend with a Quasar/Vue frontend; stateful workloads (PostgreSQL, Redis, RabbitMQ, Elasticsearch) on Kubernetes
+- Implemented AT Protocol federation, so every user has a real PDS account they can take with them; integrated Matrix for real-time community chat
+- Moved all of production (API, Matrix, PDS, PostgreSQL, RabbitMQ, Redis) from AWS EKS to DigitalOcean alone in July 2026, with a gated DNS cutover and the AWS stack torn down eight days later
+- Found why 437 of 537 OpenMeet accounts were invisible to the Bluesky network (a relay limit of 100 accounts per PDS) and made the case upstream; the limit was raised to 1,000 the same day and every account became visible
+- Run the full delivery loop solo: GitHub Actions and ArgoCD, Terraform and Helm, Prometheus, Grafana and OpenTelemetry/Jaeger, TLS/PKI and Sealed Secrets, upgrades and incident response
+- Designed and shipped LLM features: a survey builder that turns a research question into a structured survey, and an event-ingestion pipeline that normalizes scraped pages and forwarded emails with cheap-model-first routing to bound per-request cost. Generation runs off the request path on RabbitMQ workers, with caching and graceful degradation when models are slow
 
 ### Senior Sales Engineering Architect, RackN | 2024
 
