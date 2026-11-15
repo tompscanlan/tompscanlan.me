@@ -38,6 +38,7 @@ Open-source, federated alternative to Meetup, removing the pricing barrier that 
 - Found why 437 of 537 OpenMeet accounts were invisible to the Bluesky network (a relay limit of 100 accounts per PDS) and made the case upstream; the limit was raised to 1,000 the same day and every account became visible
 - Run the full delivery loop solo: GitHub Actions and ArgoCD, Terraform and Helm, Prometheus, Grafana and OpenTelemetry/Jaeger, TLS/PKI and Sealed Secrets, upgrades and incident response
 - Designed and shipped LLM features: a survey builder that turns a research question into a structured survey, and an event-ingestion pipeline that normalizes scraped pages and forwarded emails with cheap-model-first routing to bound per-request cost. Generation runs off the request path on RabbitMQ workers, with caching and graceful degradation when models are slow
+- Do most day-to-day engineering with coding agents (Claude Code) under a written process: tracked work items, isolated worktrees, an independent review before each merge, and a weekly measure of where sessions lose time
 
 ### Open-Source Work | 2023–Present
 
