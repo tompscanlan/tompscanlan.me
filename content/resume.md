@@ -14,12 +14,13 @@ Principal engineer · Louisville, KY · Remote
 
 ## Summary
 
-Hands-on principal engineer with 25+ years building and shipping production software, still writing code every day. Deep across the stack: TypeScript/NestJS services, Kubernetes platform engineering, observability, and production LLM integration with bounded cost and latency. Past work: shipped into multimillion-line enterprise platforms, unlocked $100M+ in U.S. federal contract eligibility with ~2,000 lines of targeted Java, and mentored engineers through the cross-team problems that stall organizations.
+Hands-on principal engineer with 25+ years building and running production software, still writing code every day. My current work is on AT Protocol, the open network behind Bluesky. I run OpenMeet's production platform alone, maintain Snowglobe, an open-source test network for atproto apps, and merged 50+ pull requests into other maintainers' atproto projects in 2026. Before that, at VMware, I unlocked $100M+ in U.S. federal contract eligibility with ~2,000 lines of targeted Java, shipped into multimillion-line enterprise platforms, and mentored engineers through the cross-team problems that stall organizations.
 
 ## Core Skills
 
 - **Languages** &nbsp;TypeScript, Go, Rust, Python, Java, shell
-- **Platform** &nbsp;Kubernetes, Docker, Helm, Terraform, Ansible, AWS, Azure, GCP, bare-metal automation
+- **AT Protocol** &nbsp;PDS hosting and operation, OAuth, lexicons, relays, Jetstream, PLC, permissioned spaces (alpha)
+- **Platform** &nbsp;Kubernetes, Docker, Helm, Terraform, Ansible, AWS, Azure, GCP, DigitalOcean, Cloudflare Workers and D1, bare-metal automation
 - **Delivery & Observability** &nbsp;GitHub Actions, ArgoCD, Prometheus, Grafana, OpenTelemetry, Jaeger, Loki
 - **Data & Messaging** &nbsp;PostgreSQL, Redis, Elasticsearch, RabbitMQ, Kafka, NATS, MQTT
 - **Security** &nbsp;TLS/PKI (cert-manager), Sealed Secrets, Kubernetes RBAC
