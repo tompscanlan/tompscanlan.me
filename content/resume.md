@@ -8,35 +8,36 @@ tags: [resume]
 
 # Tom Scanlan
 
-Principal platform engineer · Louisville, KY · Remote OK · Open to relocation
+Principal platform engineer · Louisville, KY · Remote · Open to relocation
 
 [tompscanlan@gmail.com](mailto:tompscanlan@gmail.com) · [github.com/tompscanlan](https://github.com/tompscanlan) · [linkedin.com/in/tomscanlan](https://www.linkedin.com/in/tomscanlan) · [openmeet.net](https://openmeet.net)
 
 ## Summary
 
-Principal platform engineer with 25+ years building and running production infrastructure, still hands-on every day. I take Kubernetes platforms from Terraform and GitOps through observability to incident response. At VMware I cleared a year-long blocker that opened $100M+ in U.S. federal contract eligibility. Since 2024 I have built and run a production platform on my own, including a move from AWS to DigitalOcean with no second pair of hands.
+Principal platform engineer with 25+ years building and running production infrastructure, still hands-on every day. I take Kubernetes platforms from Terraform and GitOps through observability to incident response. At VMware I cleared a year-long blocker that opened $100M+ in U.S. federal contract eligibility. Since 2024 I have run all of OpenMeet's production myself. When most of its accounts went invisible to the Bluesky network, I found the cause and got the limit raised tenfold the same day.
 
 ## Experience
 
 ### Principal Engineer and Founder, OpenMeet | 2024–Present
 
-An open-source events and groups platform for community organizers, with 500+ accounts on its own AT Protocol server (the network behind Bluesky). I designed it and run all of its production infrastructure.
+An open-source events and groups platform with 2,000+ users and its own AT Protocol server (the network behind Bluesky). I designed it and run all of its production infrastructure.
 
-- Moved all of production (API, Matrix chat, AT Protocol server, PostgreSQL, RabbitMQ, Redis) from AWS EKS to DigitalOcean alone in July 2026, behind a gated DNS cutover. AWS was torn down eight days later.
-- Run the platform end to end: Kubernetes with GitOps (ArgoCD, GitHub Actions), Terraform and Helm, Prometheus, Grafana and OpenTelemetry, TLS/PKI and Sealed Secrets, upgrades and incident response.
-- Found why 437 of 537 accounts were invisible to the Bluesky network: a relay limit of 100 accounts per server. Made the case upstream, and the limit went to 1,000 the same day.
-- Built LLM features with bounded cost: cheap-model-first routing, generation off the request path on RabbitMQ workers, caching, and graceful degradation when models are slow.
+- When 437 of 537 accounts went invisible to the Bluesky network, traced it to the relay (the service that collects posts from every server), which had started taking only 100 accounts per server. Made the case upstream, and the limit went to 1,000 the same day.
+- Planned and ran the move of all production (API, Matrix chat, AT Protocol server, PostgreSQL, RabbitMQ, Redis) from AWS EKS to DigitalOcean in July 2026: froze writes, restored from cold backups, and checked that every count matched before the DNS cutover. AWS was torn down eight days later.
+- Run the platform end to end with GitOps (ArgoCD), Terraform and Helm, Prometheus, Grafana and OpenTelemetry, upgrades and incident response.
+- Built LLM features that run off the request path on RabbitMQ workers, try a cheap model first, and degrade gracefully when models are slow.
 - Do most day-to-day engineering with coding agents (Claude Code) under a written process: tracked work, isolated worktrees, an independent review before each merge, and a weekly measure of where time is lost.
 
 ### Open Source | 2023–Present
 
-- Built [Snowglobe](https://snowglobe.at), an open-source tool that runs a private AT Protocol network in Docker (servers, directory, relay, event stream, real TLS) so apps can test changes before real users meet them. Published on npm, with a hosted public network at [lighthouse.snowglobe.at](https://lighthouse.snowglobe.at).
+- Built [Snowglobe](https://snowglobe.at), an open-source tool that runs a private copy of the network behind Bluesky in Docker, so apps can test changes before real users meet them. Published on npm, with a hosted public network at [lighthouse.snowglobe.at](https://lighthouse.snowglobe.at).
 - 50+ merged pull requests in 2026 to other maintainers' projects, mostly ingest and search infrastructure: a PostgreSQL adapter and end-to-end test suites for [contrail](https://github.com/flo-bit/contrail), an AT Protocol indexer, and search, caching and reliability fixes for the [atmo.rsvp](https://atmo.rsvp) events app.
 - 8 merged pull requests to Rust's package manager, cargo (2023), including atomic writes so an interrupted `cargo add` can't leave a half-written manifest.
 
 ### Senior Sales Engineering Architect, RackN | 2024
 
-- Shipped Proxmox support in Digital Rebar, a Go bare-metal provisioning platform, and built provisioning automation from hardware bring-up to software configuration. A sales engineering role that was mostly hands-on engineering.
+- Shipped Proxmox support in Digital Rebar, a Go bare-metal provisioning platform, and built provisioning automation from hardware bring-up to software configuration.
+- Diagnosed customer deployments live (PXE boot, networking) and turned field feedback into platform fixes.
 
 ### VMware | 2014–2023 (joined through the MomentumSI acquisition)
 
